@@ -152,6 +152,15 @@ td input[type="text"], td input[type="email"], td input[type="tel"] { width: 100
 .log .to { font-size: 12px; color: var(--muted); }
 .note { font-size: 12.5px; color: var(--muted); max-width: 72ch; }
 footer { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
+/* about */
+.about { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 18px 32px; }
+@media (max-width: 860px) { .about { grid-template-columns: minmax(0,1fr); } }
+.about p { margin: 8px 0 0; max-width: 68ch; font-size: 15px; }
+.about dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 13.5px; }
+.about dt { color: var(--muted); font-family: var(--font-data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
+.about dd { margin: 0; }
+.levels { display: grid; gap: 8px; margin-top: 14px; }
+.levels div { display: grid; grid-template-columns: 88px 1fr; gap: 10px; align-items: start; font-size: 13.5px; }
 /* weather */
 .wx { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; }
 .wx .now { display: flex; align-items: baseline; gap: 10px; }
@@ -168,7 +177,7 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
     <div style="display:flex;gap:14px;align-items:center">
     <div id="brand" role="img" aria-label="HSMG" style="display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid var(--line);font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.06em;line-height:1;color:var(--fg)"><svg viewBox="40 66 645 452" width="52" height="37" aria-hidden="true" style="display:block"><g fill="var(--muted)" opacity=".45"><rect x="155" y="110" width="10" height="405"/><rect x="405" y="224" width="275" height="16"/><rect x="585" y="275" width="8" height="240"/></g><g fill="currentColor"><rect x="42" y="70" width="363" height="40"/><rect x="165" y="110" width="50" height="405"/><rect x="355" y="110" width="50" height="165"/><rect x="355" y="240" width="325" height="35"/><rect x="542" y="275" width="43" height="240"/></g></svg><span>HSMG</span></div>
     <div>
-      <div class="eyebrow">Town of Peace River, Alberta · Flow monitoring</div>
+      <div class="eyebrow">Town of Peace River, Alberta · Flood mitigation</div>
       <h1>Pat's Creek Monitor</h1>
     </div>
     </div>
@@ -300,9 +309,30 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
     </div>
   </section>
 
+  <section class="panel about" id="about" aria-label="About the project">
+    <div>
+      <div class="eyebrow">About the project</div>
+      <h2>Pat's Creek Flow Monitoring</h2>
+      <p>This monitoring system is part of an engineering project to mitigate flooding on Pat's Creek in the Town of Peace River. Four solar-powered stations measure water level where the creek passes through its inlet, drainage pipe and outlet, and the two in-line stations also measure flow. The aim is to see rising water early and alert the right people before it becomes a flood.</p>
+      <div class="levels">
+        <div><span class="pill ok" style="justify-self:start">Normal</span><span>Water is below the watch level set for that structure.</span></div>
+        <div><span class="pill watch" style="justify-self:start">Watch</span><span>Water is rising toward flood risk. Contacts set to receive watch alerts are notified.</span></div>
+        <div><span class="pill alarm" style="justify-self:start">Alarm</span><span>Water has reached the flood alarm level for that structure. Everyone on the alert list is notified.</span></div>
+      </div>
+    </div>
+    <dl>
+      <dt>Project</dt><dd>Pat's Creek Flow Monitoring</dd>
+      <dt>Location</dt><dd>Town of Peace River, Alberta</dd>
+      <dt>Drawings</dt><dd>Detailed Engineering Drawings, Issued for Construction, Revision 0, July 15, 2026</dd>
+      <dt>Engineer</dt><dd>Sameng Inc.</dd>
+      <dt>Stations</dt><dd>Upstream Inlet Monitor (Dwg 05)<br>In Line Pipe Monitor 2 (Dwg 07)<br>In Line Pipe Monitor 1 (Dwg 06)<br>Downstream Outlet Monitor (Dwg 04)</dd>
+      <dt>Structures</dt><dd>EX 5500 × 4700 mm concrete pipe inlet, EX 5210 × 3050 mm drainage pipe, EX 4120 × 3050 mm concrete box outlet</dd>
+    </dl>
+  </section>
+
   <footer>
     <span><b style="color:var(--fg)">HSMG</b> · Pat's Creek remote monitoring</span>
-    <span>Station locations and equipment from the Pat's Creek Flow Monitoring IFC drawing set, Rev 0 (July 15, 2026), drawings 02–07.</span>
+    <span>Station locations and equipment from the Pat's Creek Flow Monitoring detailed engineering drawings, Issued for Construction, Rev 0 (July 15, 2026), drawings 02–07.</span>
     <span>Levels are depth of water above the invert. Flow at the in-line pipes is computed from area-velocity readings.</span>
   </footer>
 </div>
@@ -695,9 +725,9 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
   pvSel.addEventListener("change", renderPreviews);
   function renderPreviews() {
     const s = byId[pvSel.value], t = settings.thresholds[s.id], L = latest(s.id), rr = riseRate(s.id);
-    const sev = sevOf(s.id, L.lvl), lvlName = sev === "alarm" ? "ALARM" : "WATCH", thr = sev === "alarm" ? t.alarm : t.watch;
+    const sev = sevOf(s.id, L.lvl), lvlName = sev === "alarm" ? "FLOOD ALARM" : "FLOOD WATCH", thr = sev === "alarm" ? t.alarm : t.watch;
     const when = fmtTime.format(new Date()) + " MT";
-    const sms = `Pat's Creek ${lvlName}: ${s.name} at ${L.lvl.toFixed(2)} m (${lvlName.toLowerCase()} ${thr.toFixed(2)} m), ${rr >= 0 ? "rising" : "falling"} ${Math.abs(rr).toFixed(2)} m/h. ${when}. Reply ACK to acknowledge.`;
+    const sms = `Pat's Creek ${lvlName}: ${s.name} at ${L.lvl.toFixed(2)} m (${lvlName.toLowerCase()} level ${thr.toFixed(2)} m), ${rr >= 0 ? "rising" : "falling"} ${Math.abs(rr).toFixed(2)} m/h. ${when}. Reply ACK to acknowledge.`;
     document.getElementById("previews").innerHTML = `
       <div class="preview"><div class="ch">Text message</div>${esc(sms)}</div>
       <div class="preview"><div class="ch">Push notification</div><b>${lvlName} · ${esc(s.name)}</b><br>${L.lvl.toFixed(2)} m and ${rr >= 0 ? "rising" : "falling"}. Tap to open the dashboard.</div>
